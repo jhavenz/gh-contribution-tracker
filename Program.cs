@@ -40,19 +40,10 @@ namespace GitHubIssueTracker
 
     class Program
     {
-        // Define the database path relative to the project root
-        private static readonly string DatabasePath = Path.Combine(
-            AppContext.BaseDirectory, // Gets the base directory of the application
-            "..", // Up one level from bin/Debug/net9.0
-            "..", // Up one level from Debug
-            "..", // Up one level from bin
-            "..", // Up one level from GitHubIssueTracker project folder
-            "github-tracker.db");
-
         static void Main(string[] args)
         {
             // Ensure the database exists and apply migrations
-            using (var context = new AppDbContext(DatabasePath))
+            using (var context = new AppDbContext())
             {
                 try
                 {
@@ -106,7 +97,7 @@ namespace GitHubIssueTracker
                     return;
                 }
 
-                using var context = new AppDbContext(DatabasePath);
+                using var context = new AppDbContext();
 
                 // Keep track of entities processed in this run to avoid redundant DB checks
                 var processedUsers = new Dictionary<string, GitHubUser>();
@@ -221,7 +212,7 @@ namespace GitHubIssueTracker
                 }
 
                 context.SaveChanges(); // Save all changes at once
-                Console.WriteLine($"Successfully saved/updated {issues.Count} issues/pull requests to {DatabasePath}.");
+                Console.WriteLine($"Successfully saved/updated {issues.Count} issues/pull requests to {DatabaseManager.DatabasePath}.");
             }
             catch (Exception ex)
             {
@@ -272,7 +263,7 @@ namespace GitHubIssueTracker
 
 
                 // Generate the report using AppDbContext
-                using var context = new AppDbContext(DatabasePath);
+                using var context = new AppDbContext();
                 var reports = GenerateContributionReportEF(context, opts.DeveloperLogin, startDate, endDate);
 
                 if (!reports.Any() || !reports.SelectMany(r => r.Contributions).Any())

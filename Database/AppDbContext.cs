@@ -11,29 +11,10 @@ namespace GitHubIssueTracker.Database
         public DbSet<GitHubLabel> Labels { get; set; }
         public DbSet<GitHubIssue> Issues { get; set; }
 
-        private readonly string _dbPath;
-
-        // Constructor used by the application
-        public AppDbContext(string dbPath)
-        {
-            _dbPath = dbPath;
-        }
-
-        // Parameterless constructor required for EF Core tools (migrations)
-        // It determines the path similarly to how Program.cs does.
-        public AppDbContext()
-        {
-            // Point to the database file in the project root
-            _dbPath = System.IO.Path.Combine(
-                AppContext.BaseDirectory,
-                "..", "..", "..", "..",
-                "github-tracker.db");
-        }
-
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite($"Data Source={_dbPath}");
+            optionsBuilder.UseSqlite($"Data Source={DatabaseManager.DatabasePath}");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

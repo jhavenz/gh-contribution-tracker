@@ -10,14 +10,14 @@ namespace GitHubIssueTracker.Database
     // No longer needs IDisposable if DbContext is managed with 'using'
     public class DatabaseManager
     {
-        private readonly string _dbPath;
+        public static string DatabasePath = Path.Combine(
+                AppContext.BaseDirectory,
+                "..", "..",
+                "github-tracker.db");
 
-        public DatabaseManager(string dbPath)
+        public DatabaseManager()
         {
-            _dbPath = dbPath;
-            // Initialization is now handled by EF Core migrations
-            // Ensure the database directory exists (EF Core might handle this, but good practice)
-            string? filePath = Path.GetDirectoryName(dbPath);
+            string? filePath = Path.GetDirectoryName(DatabasePath);
             if (filePath != null && !Directory.Exists(filePath))
                 Directory.CreateDirectory(filePath);
         }
@@ -28,7 +28,7 @@ namespace GitHubIssueTracker.Database
 
         public void SaveIssues(List<GitHubIssue> issues)
         {
-            using var context = new AppDbContext(_dbPath);
+            using var context = new AppDbContext(DatabasePath);
 
             // Track existing entities to avoid duplicates
             var existingUsers = context.Users.AsNoTracking().ToDictionary(u => u.Id);
@@ -108,7 +108,7 @@ namespace GitHubIssueTracker.Database
 
         public List<ContributionReport> GenerateContributionReport(string? developerLogin = null, DateTime? startDate = null, DateTime? endDate = null)
         {
-            using var context = new AppDbContext(_dbPath);
+            using var context = new AppDbContext(DatabasePath);
 
             // Base query for issues, including related data
             var query = context.Issues
