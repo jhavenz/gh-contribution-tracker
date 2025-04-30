@@ -5,9 +5,6 @@
 
 # project files
 .env
-csv/
-json/
-samples/
 
 # User-specific files
 *.rsuser
