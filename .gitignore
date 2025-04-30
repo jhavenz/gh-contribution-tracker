@@ -5,6 +5,9 @@
 
 # project files
 .env
+github-tracker.db
+github-tracker.db-shm
+github-tracker.db-wal
 
 # User-specific files
 *.rsuser
