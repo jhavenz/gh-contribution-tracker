@@ -18,7 +18,7 @@ namespace GitHubIssueTracker.Models
         public required string Title { get; set; }
         public required string State { get; set; }
         public DateTime? ClosedAt { get; set; }
-        public DateTime? CreatedAt { get; set; }
+        public required DateTime CreatedAt { get; set; }
         public bool IsPullRequest { get; set; }
         public required string Repository { get; set; }
         public required List<string> Labels { get; set; }
